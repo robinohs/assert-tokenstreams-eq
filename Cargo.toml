@@ -12,7 +12,7 @@ categories = [
 ]
 description = "A utility for comparing token streams: applies rustfmt for consistent formatting and leverages pretty_assertions to clearly visualize differences."
 license = "MIT OR Apache-2.0"
-include = ["src/**/*.rs", "Cargo.toml"]
+include = ["src/**/*.rs", "Cargo.toml", "examples/**"]
 
 [dependencies]
 thiserror = "2"
