@@ -1,23 +1,22 @@
 [package]
 name = "assert-tokenstreams-eq"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 authors = ["Robin Ohs <me@robinohs.dev>"]
 repository = "https://github.com/robinohs/assert-tokenstreams-eq"
 keywords = ["tokenstream", "testing", "macro-helper", "test"]
-categories = ["development-tools::procedural-macro-helpers", "development-tools::testing", "development-tools"]
-description = "Compares tokenstreams by applying rustfmt and using pretty_assertions to visualize differences."
-license = "MIT OR Apache-2.0"
-include = [
-    "src/**/*.rs",
-    "Cargo.toml",
+categories = [
+    "development-tools::procedural-macro-helpers",
+    "development-tools::testing",
+    "development-tools",
 ]
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "A utility for comparing token streams: applies rustfmt for consistent formatting and leverages pretty_assertions to clearly visualize differences."
+license = "MIT OR Apache-2.0"
+include = ["src/**/*.rs", "Cargo.toml"]
 
 [dependencies]
-thiserror = "1.0.38"
-pretty_assertions = "1.3.0"
+thiserror = "2"
+pretty_assertions = "1"
 
 [dev-dependencies]
-quote = "1.0.23"
+quote = "1"
