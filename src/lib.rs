@@ -17,31 +17,34 @@ enum RustfmtError {
     Output,
     #[error("Could not access stdin of rustfmt child process.")]
     Stdin,
-    #[error("Input is no valid rust code.\n{0}")]
+    #[error("Input is not valid Rust code.\n{0}")]
     InvalidRust(String),
 }
 
 /// # Panics
 ///
-/// This function will panic for different reasons:
-/// - The tokenstreams are not equal.
-/// - Any tokenstream is no valid rust code.
-/// - rustfmt is not installed or configured wrong.
-/// - It was not possible to create a child process to run rustfmt.
-/// - The output of rustfmt could not be converted to Utf-8.
-pub fn compare_tokenstreams(first_tokenstream: &impl ToString, second_tokenstream: &impl ToString) {
+/// This function will panic if:
+/// - The token streams are not equal.
+/// - Either token stream is not valid Rust code.
+/// - `rustfmt` is not installed or is configured incorrectly.
+/// - It was not possible to create a child process to run `rustfmt`.
+/// - The output of `rustfmt` could not be converted to UTF-8.
+pub fn compare_tokenstreams(
+    first_tokenstream: &impl std::fmt::Display,
+    second_tokenstream: &impl std::fmt::Display,
+) {
     let first_formatted = match apply_rustfmt(first_tokenstream) {
         Ok(tokens) => tokens,
-        Err(e) => panic!("{}", e),
+        Err(e) => panic!("Error formatting first token stream: {}", e),
     };
     let second_formatted = match apply_rustfmt(second_tokenstream) {
         Ok(tokens) => tokens,
-        Err(e) => panic!("{}", e),
+        Err(e) => panic!("Error formatting second token stream: {}", e),
     };
     assert_eq!(first_formatted, second_formatted);
 }
 
-fn apply_rustfmt(tokens: &impl ToString) -> Result<String, RustfmtError> {
+fn apply_rustfmt(tokens: &impl std::fmt::Display) -> Result<String, RustfmtError> {
     let mut process = Command::new("rustfmt")
         .arg("--")
         .stdin(Stdio::piped())
@@ -53,7 +56,7 @@ fn apply_rustfmt(tokens: &impl ToString) -> Result<String, RustfmtError> {
         return Err(RustfmtError::Stdin);
     };
 
-    stdin.write_all(tokens.to_string().as_bytes())?;
+    write!(stdin, "{}", tokens)?;
 
     let output = process
         .wait_with_output()
