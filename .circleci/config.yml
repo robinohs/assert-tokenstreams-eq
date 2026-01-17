@@ -3,7 +3,7 @@ version: 2.1
 executors:
   rust-executor:
     docker:
-      - image: cimg/rust:1.85
+      - image: cimg/rust:1.85.1
 
 jobs:
   build-test-clippy:
