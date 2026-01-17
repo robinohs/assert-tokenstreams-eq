@@ -28,6 +28,14 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Verify Tag on Main
+          command: |
+             git fetch origin main
+             if ! git branch -r --contains HEAD | grep -w "origin/main"; then
+               echo "Tag is NOT on main branch. Skipping publish."
+               circleci-agent step halt
+             fi
+      - run:
           name: Publish to Crates.io
           command: cargo publish --token $CARGO_TOKEN
 
@@ -41,7 +49,8 @@ workflows:
       - publish:
           requires:
             - build-test-clippy
-          when:
-            condition:
-              equal: [main, << pipeline.git.branch >>]
-              equal: [/^v.*/, << pipeline.git.tag >>]
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              only: main
