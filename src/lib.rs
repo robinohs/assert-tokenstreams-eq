@@ -35,11 +35,11 @@ pub fn compare_tokenstreams(
 ) {
     let first_formatted = match apply_rustfmt(first_tokenstream) {
         Ok(tokens) => tokens,
-        Err(e) => panic!("Error formatting first token stream: {}", e),
+        Err(e) => panic!("Error formatting first token stream: {e}"),
     };
     let second_formatted = match apply_rustfmt(second_tokenstream) {
         Ok(tokens) => tokens,
-        Err(e) => panic!("Error formatting second token stream: {}", e),
+        Err(e) => panic!("Error formatting second token stream: {e}"),
     };
     assert_eq!(first_formatted, second_formatted);
 }
@@ -56,7 +56,7 @@ fn apply_rustfmt(tokens: &impl std::fmt::Display) -> Result<String, RustfmtError
         return Err(RustfmtError::Stdin);
     };
 
-    write!(stdin, "{}", tokens)?;
+    write!(stdin, "{tokens}")?;
 
     let output = process
         .wait_with_output()
@@ -100,7 +100,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "(left == right)")]
     fn test_compare_tokenstreams_unequal() {
         let first = quote! {
             fn test(a: String, b: String) {
@@ -118,7 +118,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "Input is not valid Rust code.")]
     fn test_compare_tokenstreams_invalid_rust_code() {
         let first = quote! {
             async fn test(a: String, b: String) {
@@ -137,13 +137,13 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "(left == right)")]
     fn test_compare_tokenstreams_unequal_async() {
         let first = quote! {
             async fn test(a: String, b: String) {
                 let test = async {
                     a + b
-                }.await
+                }.await;
                 return test;
             }
         };
