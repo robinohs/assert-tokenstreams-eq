@@ -5,7 +5,7 @@ token streams to ensure consistent formatting and leverages `pretty_assertions`
 to clearly visualize differences when the assertion fails.
 
 [![MSRV](https://img.shields.io/badge/Rust-1.85.1%2B-orange.svg)](https://rustup.rs)
-[![License](https://img.shields.io/crates/l/assert-tokenstreams-eq)](https://img.shields.io/crates/l/assert-tokenstreams-eq)
+[![License](https://img.shields.io/crates/l/assert-tokenstreams-eq)](https://crates.io/crates/assert-tokenstreams-eq)
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/robinohs/assert-tokenstreams-eq/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/robinohs/assert-tokenstreams-eq/tree/main)
 
 ## Usage
