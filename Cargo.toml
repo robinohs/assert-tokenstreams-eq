@@ -1,6 +1,7 @@
 [package]
 name = "assert-tokenstreams-eq"
 version = "0.1.0"
+rust-version = "1.85.1"
 edition = "2024"
 authors = ["Robin Ohs <me@robinohs.dev>"]
 repository = "https://github.com/robinohs/assert-tokenstreams-eq"
@@ -13,6 +14,7 @@ categories = [
 description = "A utility for comparing token streams: applies rustfmt for consistent formatting and leverages pretty_assertions to clearly visualize differences."
 license = "MIT OR Apache-2.0"
 include = ["src/**/*.rs", "Cargo.toml", "examples/**"]
+
 
 [dependencies]
 thiserror = "2"

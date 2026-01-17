@@ -1,0 +1,76 @@
+version: 2.1
+
+executors:
+  rust-executor:
+    docker:
+      - image: cimg/rust:1.85.1
+
+jobs:
+  build-test-clippy:
+    executor: rust-executor
+    steps:
+      - checkout
+      - run:
+          name: Check version
+          command: rustc --version && cargo --version
+      - run:
+          name: Check formatting
+          command: cargo fmt -- --check
+      - run:
+          name: Build
+          command: cargo build
+      - run:
+          name: Test
+          command: cargo test
+      - run:
+          name: Clippy
+          command: cargo clippy --tests -- -D clippy::all -D clippy::pedantic
+
+  publish:
+    executor: rust-executor
+    steps:
+      - checkout
+      - run:
+          name: Verify Tag on Main
+          command: |
+            git fetch origin main
+            if ! git branch -r --contains HEAD | grep -w "origin/main"; then
+              echo "Tag is NOT on main branch. Skipping publish."
+              circleci-agent step halt
+            fi
+      - run:
+          name: Validate tag matches Cargo.toml version
+          command: |
+            if [ -z "${CIRCLE_TAG}" ]; then
+              echo "CIRCLE_TAG is not set. This job should only run on tag builds."
+              exit 1
+            fi
+            TAG_VERSION="${CIRCLE_TAG#v}"
+            FILE_VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+            if [ -z "$FILE_VERSION" ]; then
+              echo "Could not determine version from Cargo.toml"
+              exit 1
+            fi
+            if [ "$TAG_VERSION" != "$FILE_VERSION" ]; then
+              echo "Tag version ($TAG_VERSION) does not match Cargo.toml version ($FILE_VERSION). Aborting publish."
+              exit 1
+            fi
+      - run:
+          name: Publish to Crates.io
+          command: cargo publish --token $CARGO_TOKEN
+
+workflows:
+  build_and_publish:
+    jobs:
+      - build-test-clippy:
+          filters:
+            tags:
+              only: /^\d+\.\d+\.\d+$/
+      - publish:
+          requires:
+            - build-test-clippy
+          filters:
+            tags:
+              only: /^\d+\.\d+\.\d+$/
+            branches:
+              only: main
