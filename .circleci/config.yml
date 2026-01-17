@@ -3,7 +3,7 @@ version: 2.1
 executors:
   rust-executor:
     docker:
-      - image: cimg/rust:1.92
+      - image: cimg/rust:1.85
 
 jobs:
   build-test-clippy:
@@ -21,7 +21,7 @@ jobs:
           command: cargo test
       - run:
           name: Clippy
-          command: cargo clippy -- -D warnings
+          command: cargo clippy --tests -- -D clippy::all -D clippy::pedantic
 
   publish:
     executor: rust-executor
