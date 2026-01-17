@@ -39,6 +39,23 @@ jobs:
               circleci-agent step halt
             fi
       - run:
+          name: Validate tag matches Cargo.toml version
+          command: |
+            if [ -z "${CIRCLE_TAG}" ]; then
+              echo "CIRCLE_TAG is not set. This job should only run on tag builds."
+              exit 1
+            fi
+            TAG_VERSION="${CIRCLE_TAG#v}"
+            FILE_VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+            if [ -z "$FILE_VERSION" ]; then
+              echo "Could not determine version from Cargo.toml"
+              exit 1
+            fi
+            if [ "$TAG_VERSION" != "$FILE_VERSION" ]; then
+              echo "Tag version ($TAG_VERSION) does not match Cargo.toml version ($FILE_VERSION). Aborting publish."
+              exit 1
+            fi
+      - run:
           name: Publish to Crates.io
           command: cargo publish --token $CARGO_TOKEN
 
@@ -48,12 +65,12 @@ workflows:
       - build-test-clippy:
           filters:
             tags:
-              only: /^v.*/
+              only: /^\d+\.\d+\.\d+$/
       - publish:
           requires:
             - build-test-clippy
           filters:
             tags:
-              only: /^v.*/
+              only: /^\d+\.\d+\.\d+$/
             branches:
               only: main
