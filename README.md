@@ -4,7 +4,7 @@ A utility for comparing token streams in tests. It applies `rustfmt` to the
 token streams to ensure consistent formatting and leverages `pretty_assertions`
 to clearly visualize differences when the assertion fails.
 
-[![MSRV](https://img.shields.io/badge/Rust-1.85.1%2B-orange.svg)](https://img.shields.io/badge/Rust-1.85.1%2B-orange.svg)
+[![MSRV](https://img.shields.io/badge/Rust-1.85.1%2B-orange.svg)](https://rustup.rs)
 [![License](https://img.shields.io/crates/l/assert-tokenstreams-eq)](https://img.shields.io/crates/l/assert-tokenstreams-eq)
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/robinohs/assert-tokenstreams-eq/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/robinohs/assert-tokenstreams-eq/tree/main)
 
